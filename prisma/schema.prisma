@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model atomical_container {
+  id              Int    @id @default(autoincrement())
+  atomical_id     String @unique @db.VarChar(255)
+  atomical_number Int    @db.UnsignedInt
+  container       String @unique @db.VarChar(255)
+  name            String @db.VarChar(255)
+  deploy_time     Int    @db.UnsignedInt
+  item_count      Int    @db.UnsignedInt
+  minted_count    Int    @db.UnsignedInt
+  holders         Int    @db.UnsignedInt
+  rank            Int    @db.UnsignedTinyInt
+  update_at       Int    @db.UnsignedInt
+  icon_url        String @db.VarChar(255)
+}
+
+model atomical_dmitem {
+  id              Int    @id @default(autoincrement())
+  atomical_id     String @unique @db.VarChar(255)
+  atomical_number Int    @db.UnsignedInt
+  container       String @db.VarChar(255)
+  dmitem          String @db.VarChar(255)
+  status          Int    @db.UnsignedTinyInt
+  mint_time       Int    @db.UnsignedInt
+  update_at       Int    @db.UnsignedInt
+
+  @@index([atomical_id, container])
+}
+
+model atomical_realm {
+  id              Int    @id @default(autoincrement())
+  atomical_id     String @unique @db.VarChar(255)
+  atomical_number Int    @db.UnsignedInt
+  name            String @db.VarChar(255)
+  status          Int    @db.UnsignedTinyInt
+  mint_time       Int    @db.UnsignedInt
+  update_at       Int    @db.UnsignedInt
+
+  @@index([atomical_id, atomical_number])
+}
+
+model atomical_token {
+  id                 Int     @id @default(autoincrement())
+  atomical_id        String  @unique @db.VarChar(255)
+  atomical_number    Int     @db.UnsignedInt
+  name               String  @db.VarChar(255)
+  bitworkc           String  @db.VarChar(255)
+  bitworkr           String  @db.VarChar(255)
+  status             Int     @db.UnsignedTinyInt
+  mint_mode          Int     @db.UnsignedTinyInt
+  deploy_time        Int     @db.UnsignedInt
+  total_supply       String  @db.VarChar(255)
+  circulating_supply String  @db.VarChar(255)
+  mint_amount        String  @db.VarChar(255)
+  is_hot             Boolean
+  rank               Int     @db.UnsignedTinyInt
+  holders            Int     @db.UnsignedInt
+  minted             String  @db.VarChar(255)
+  update_at          Int     @db.UnsignedInt
+  icon_url           String  @db.VarChar(255)
+
+  @@index([atomical_id, atomical_number, deploy_time])
+}

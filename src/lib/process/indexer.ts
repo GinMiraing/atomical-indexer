@@ -7,15 +7,13 @@ import RedisInstance from "../server/redis.server";
 import { sleep } from "../utils";
 
 const IndexerProcess = async () => {
-  console.log("Indexer Process Start ========================");
-
   try {
     const start = await RedisInstance.get("indexer:start");
     let startAtomicalNumber = start ? parseInt(start) : 0;
 
     do {
       try {
-        await sleep(500);
+        await sleep(1000);
 
         const { global } = await electrumClient.atomicalsGetState(100, true);
 
@@ -46,9 +44,7 @@ const IndexerProcess = async () => {
               status:
                 atomical.$request_ticker_status.status === "verified"
                   ? 1
-                  : atomical.$request_ticker_status.status.startsWith(
-                        "pending_awaiting",
-                      )
+                  : atomical.$request_ticker_status.status.startsWith("pending")
                     ? 2
                     : 3,
               mint_mode: atomical.$mint_mode === "fixed" ? 1 : 2,
@@ -86,9 +82,7 @@ const IndexerProcess = async () => {
               status:
                 atomical.$request_realm_status.status === "verified"
                   ? 1
-                  : atomical.$request_realm_status.status.startsWith(
-                        "pending_candidate",
-                      )
+                  : atomical.$request_realm_status.status.startsWith("pending")
                     ? 2
                     : 3,
               mint_time: atomical.mint_info.args.time,
@@ -109,9 +103,7 @@ const IndexerProcess = async () => {
               status:
                 atomical.$request_dmitem_status.status === "verified"
                   ? 1
-                  : atomical.$request_dmitem_status.status.startsWith(
-                        "pending_awaiting",
-                      )
+                  : atomical.$request_dmitem_status.status.startsWith("pending")
                     ? 2
                     : 3,
               mint_time: atomical.mint_info.args.time,

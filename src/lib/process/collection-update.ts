@@ -8,8 +8,6 @@ import RedisInstance from "../server/redis.server";
 import { sleep } from "../utils";
 
 const CollectionUpdateProcess = async () => {
-  console.log("Collection Update Process Start ========================");
-
   try {
     do {
       console.log("start collection update");
@@ -45,7 +43,7 @@ const CollectionUpdateProcess = async () => {
 
         for (const collection of collectionWithCount) {
           try {
-            await sleep(500);
+            await sleep(1000);
 
             const { result: containerId } =
               await electrumClient.atomicalsGetByContainer(

@@ -11,8 +11,6 @@ import RedisInstance from "../server/redis.server";
 import { sleep } from "../utils";
 
 const TokenUpdateProcess = async () => {
-  console.log("Token Update Process Start ========================");
-
   try {
     do {
       console.log("start token update");
@@ -43,7 +41,7 @@ const TokenUpdateProcess = async () => {
 
         for (const token of tokens) {
           try {
-            await sleep(500);
+            await sleep(1000);
 
             const temp = {
               atomical_id: token.atomical_id,

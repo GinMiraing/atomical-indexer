@@ -86,55 +86,76 @@ const TokenUpdateProcess = async () => {
                 : false;
             temp.update_at = dayjs().unix();
 
-            const [holderData, atomicalMarketTokenData, bitatomTokenData] =
-              await Promise.all([
-                getTokenHolders(token.name),
-                getTokenStatsInAtomicalMarket(token.name),
-                getTokenStatsInBitatom(token.name),
-              ]);
+            try {
+              const holderData = await getTokenHolders(token.name);
 
-            if (
-              holderData &&
-              holderData.holderList &&
-              holderData.holderList.length > 0
-            ) {
-              await RedisInstance.set(
-                `holders:tokens:${token.name}`,
-                JSON.stringify(holderData.holderList),
-              );
+              if (
+                holderData &&
+                holderData.holderList &&
+                holderData.holderList.length > 0
+              ) {
+                await RedisInstance.set(
+                  `holders:tokens:${token.name}`,
+                  JSON.stringify(holderData.holderList),
+                );
+              }
+            } catch (e) {
+              console.error("get token holder data failed:", token.name);
+              console.error("error:", e);
             }
 
-            if (atomicalMarketTokenData) {
-              await RedisInstance.set(
-                `market:atomicalmarket:tokens:${token.name}`,
-                JSON.stringify({
-                  floorPrice: atomicalMarketTokenData.floorPrice || 0,
-                  listing: atomicalMarketTokenData.totalListed || 0,
-                  volume24Hours: atomicalMarketTokenData.volume24Hour || 0,
-                  volume7Days: atomicalMarketTokenData.volume7Days || 0,
-                  volumeTotal: atomicalMarketTokenData.totalVolume || 0,
-                  sell24Hours: atomicalMarketTokenData.sales24Hour || 0,
-                  marketCap:
-                    atomicalMarketTokenData.floorPrice *
-                      tokenIndexerData.location_summary!.circulating_supply ||
-                    0,
-                }),
+            try {
+              const atomicalMarketTokenData =
+                await getTokenStatsInAtomicalMarket(token.name);
+
+              if (atomicalMarketTokenData) {
+                await RedisInstance.set(
+                  `market:atomicalmarket:tokens:${token.name}`,
+                  JSON.stringify({
+                    floorPrice: atomicalMarketTokenData.floorPrice || 0,
+                    listing: atomicalMarketTokenData.totalListed || 0,
+                    volume24Hours: atomicalMarketTokenData.volume24Hour || 0,
+                    volume7Days: atomicalMarketTokenData.volume7Days || 0,
+                    volumeTotal: atomicalMarketTokenData.totalVolume || 0,
+                    sell24Hours: atomicalMarketTokenData.sales24Hour || 0,
+                    marketCap:
+                      atomicalMarketTokenData.floorPrice *
+                        tokenIndexerData.location_summary!.circulating_supply ||
+                      0,
+                  }),
+                );
+              }
+            } catch (e) {
+              console.error(
+                "get atomical market token data failed:",
+                token.name,
               );
+              console.error("error:", e);
             }
 
-            if (bitatomTokenData) {
-              await RedisInstance.set(
-                `market:bitatom:tokens:${token.name}`,
-                JSON.stringify({
-                  floorPrice: bitatomTokenData.floorPrice || 0,
-                  listing: bitatomTokenData.listings || 0,
-                  volume24Hours: bitatomTokenData.volume_24h || 0,
-                  volume7Days: bitatomTokenData.volume_7d || 0,
-                  volumeTotal: bitatomTokenData.volume_total || 0,
-                  sell24Hours: bitatomTokenData.sells_24h || 0,
-                  marketCap: bitatomTokenData.market_cap || 0,
-                }),
+            try {
+              const bitatomTokenData = await getTokenStatsInBitatom(token.name);
+
+              if (bitatomTokenData) {
+                await RedisInstance.set(
+                  `market:bitatom:tokens:${token.name}`,
+                  JSON.stringify({
+                    floorPrice: bitatomTokenData.floorPrice || 0,
+                    listing: bitatomTokenData.listings || 0,
+                    volume24Hours: bitatomTokenData.volume_24h || 0,
+                    volume7Days: bitatomTokenData.volume_7d || 0,
+                    volumeTotal: bitatomTokenData.volume_total || 0,
+                    sell24Hours: bitatomTokenData.sells_24h || 0,
+                    marketCap: bitatomTokenData.market_cap || 0,
+                  }),
+                );
+              }
+            } catch (e) {
+              console.error(
+                "get bitatom market token data failed:",
+                token.name,
               );
+              console.error("error:", e);
             }
 
             await DatabaseInstance.atomical_token.update({

@@ -113,11 +113,11 @@ const TokenUpdateProcess = async () => {
                   `market:atomicalmarket:tokens:${token.name}`,
                   JSON.stringify({
                     floorPrice: atomicalMarketTokenData.floorPrice || 0,
-                    listing: atomicalMarketTokenData.totalListed || 0,
-                    volume24Hours: atomicalMarketTokenData.volume24Hour || 0,
+                    totalListed: atomicalMarketTokenData.totalListed || 0,
+                    volume1Day: atomicalMarketTokenData.volume1Day || 0,
                     volume7Days: atomicalMarketTokenData.volume7Days || 0,
-                    volumeTotal: atomicalMarketTokenData.totalVolume || 0,
-                    sell24Hours: atomicalMarketTokenData.sales24Hour || 0,
+                    volumeTotal: atomicalMarketTokenData.volumeTotal || 0,
+                    sales1Day: atomicalMarketTokenData.sales1Day || 0,
                     marketCap:
                       atomicalMarketTokenData.floorPrice *
                         tokenIndexerData.location_summary!.circulating_supply ||

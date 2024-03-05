@@ -44,11 +44,11 @@ export const getCollectionHolders = async (collection: string, limit = 100) => {
 export const getTokenStatsInAtomicalMarket = async (token: string) => {
   const resp = await AxiosInstance.get<{
     totalListed: number;
-    totalVolume: number;
-    sales24Hour: number;
+    volumeTotal: number;
+    sales1Day: number;
     volume7Days: number;
     floorPrice: number;
-    volume24Hour: number;
+    volume1Day: number;
     sales7Days: number;
   }>(`${MarketUrl}/token/stats`, {
     params: {
@@ -57,4 +57,34 @@ export const getTokenStatsInAtomicalMarket = async (token: string) => {
   });
 
   return resp.data;
+};
+
+export const getOrderHistory = async (
+  token: string,
+  limit: number,
+  offset: number,
+) => {
+  const resp = await AxiosInstance.get<{
+    result: {
+      bid_id: string;
+      price_sats: string;
+      seller_address: string;
+      buyer_address: string;
+      date: number;
+      atomical_content: {
+        Ticker: string;
+        Amount: number;
+      };
+      txId: string;
+    };
+  }>(`${MarketUrl}/token/history`, {
+    params: {
+      limit,
+      offset,
+      Event: "sold",
+      ticker: token,
+    },
+  });
+
+  return resp.data.result;
 };

@@ -80,10 +80,7 @@ const TokenUpdateProcess = async () => {
             ).toString();
             temp.holders =
               tokenIndexerData.location_summary!.unique_holders || 0;
-            temp.is_hot =
-              tokenIndexerData.location_summary!.unique_holders > 500
-                ? true
-                : false;
+            temp.is_hot = false;
             temp.update_at = dayjs().unix();
 
             try {
@@ -124,6 +121,10 @@ const TokenUpdateProcess = async () => {
                       0,
                   }),
                 );
+
+                if (atomicalMarketTokenData.volumeTotal > 1000000) {
+                  temp.is_hot = true;
+                }
               }
             } catch (e) {
               console.error(
@@ -141,14 +142,18 @@ const TokenUpdateProcess = async () => {
                   `market:bitatom:tokens:${token.name}`,
                   JSON.stringify({
                     floorPrice: bitatomTokenData.floorPrice || 0,
-                    listing: bitatomTokenData.listings || 0,
-                    volume24Hours: bitatomTokenData.volume_24h || 0,
+                    totalListed: bitatomTokenData.listings || 0,
+                    volume1Day: bitatomTokenData.volume_24h || 0,
                     volume7Days: bitatomTokenData.volume_7d || 0,
                     volumeTotal: bitatomTokenData.volume_total || 0,
-                    sell24Hours: bitatomTokenData.sells_24h || 0,
+                    sales1Day: bitatomTokenData.sells_24h || 0,
                     marketCap: bitatomTokenData.market_cap || 0,
                   }),
                 );
+              }
+
+              if (bitatomTokenData.volume_total > 1000000) {
+                temp.is_hot = true;
               }
             } catch (e) {
               console.error(

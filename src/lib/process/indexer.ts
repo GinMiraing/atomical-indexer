@@ -54,11 +54,7 @@ const IndexerProcess = async () => {
                 ? atomical.location_summary.circulating_supply.toString()
                 : "0",
               mint_amount: atomical.$mint_amount.toString(),
-              is_hot:
-                atomical.location_summary &&
-                atomical.location_summary.unique_holders > 500
-                  ? true
-                  : false,
+              is_hot: false,
               rank: 0,
               holders: atomical.location_summary?.unique_holders || 0,
               minted: (

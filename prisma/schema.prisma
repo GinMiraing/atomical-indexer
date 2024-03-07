@@ -69,3 +69,17 @@ model atomical_token {
 
   @@index([atomical_id, atomical_number, deploy_time])
 }
+
+model order {
+  id         Int    @id @default(autoincrement())
+  bid        String @unique @db.VarChar(255)
+  market     String @db.VarChar(255)
+  type       Int    @db.UnsignedTinyInt
+  name       String @db.VarChar(255)
+  seller     String @db.VarChar(255)
+  buyer      String @db.VarChar(255)
+  price      BigInt @db.UnsignedBigInt
+  amount     Int    @db.UnsignedInt
+  created_at Int    @db.UnsignedInt
+  tx         String @db.Char(64)
+}

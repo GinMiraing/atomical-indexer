@@ -26,7 +26,7 @@ export const getTokenStatsInBitatom = async (token: string) => {
   return resp.data.result.data.json;
 };
 
-export const getOrderHistory = async (token: string, page: number) => {
+export const getOrderHistoryInBitatom = async (token: string, page: number) => {
   const resp = await AxiosInstance.get<{
     result: {
       data: {
@@ -63,10 +63,11 @@ export const getOrderHistory = async (token: string, page: number) => {
         json: {
           ticker: token,
           page,
-          pageSize: 20,
+          pageSize: 1000,
           states: ["sold"],
           address: null,
         },
+        meta: { values: { address: ["undefined"] } },
       }),
     },
   });

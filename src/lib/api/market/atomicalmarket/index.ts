@@ -59,7 +59,7 @@ export const getTokenStatsInAtomicalMarket = async (token: string) => {
   return resp.data;
 };
 
-export const getOrderHistory = async (
+export const getOrderHistoryInAtomicalMarket = async (
   token: string,
   limit: number,
   offset: number,
@@ -75,8 +75,8 @@ export const getOrderHistory = async (
         Ticker: string;
         Amount: number;
       };
-      txId: string;
-    };
+      txId: string | null;
+    }[];
   }>(`${MarketUrl}/token/history`, {
     params: {
       limit,

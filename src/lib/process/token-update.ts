@@ -127,11 +127,11 @@ const TokenUpdateProcess = async () => {
                 }
               }
             } catch (e) {
-              console.error(
-                "get atomical market token data failed:",
-                token.name,
-              );
-              console.error("error:", e);
+              // console.error(
+              //   "get atomical market token data failed:",
+              //   token.name,
+              // );
+              // console.error("error:", e);
             }
 
             try {

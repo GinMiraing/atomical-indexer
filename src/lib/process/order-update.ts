@@ -11,26 +11,20 @@ const OrderUpdateProcess = async () => {
     do {
       console.log("start order sync");
 
-      let bitatomCompleted = false;
-      let atomicalMarketCompleted = false;
-
-      let bitatomOrderPage = 1;
-      let atomicalMarketOrderOffset = 0;
-
       try {
-        const timestamp = await RedisInstance.get("update:timestamp:order");
+        // const timestamp = await RedisInstance.get("update:timestamp:order");
 
-        if (timestamp) {
-          const now = dayjs().unix();
-          const prev = Number(timestamp);
+        // if (timestamp) {
+        //   const now = dayjs().unix();
+        //   const prev = Number(timestamp);
 
-          const duration = 60 * 30;
+        //   const duration = 60 * 30;
 
-          if (now - prev < duration) {
-            await sleep(duration * 1000 + 5000);
-            continue;
-          }
-        }
+        //   if (now - prev < duration) {
+        //     await sleep(duration * 1000 + 5000);
+        //     continue;
+        //   }
+        // }
 
         const tokens = await DatabaseInstance.atomical_token.findMany({
           select: {
@@ -43,8 +37,12 @@ const OrderUpdateProcess = async () => {
         });
 
         for (const token of tokens) {
-          bitatomOrderPage = 1;
-          atomicalMarketOrderOffset = 0;
+          let bitatomOrderPage = 1;
+          let atomicalMarketOrderOffset = 0;
+          let breakBitatom = false;
+          let breakAtomicalMarket = false;
+          let bitatomOrderCount = 0;
+          let atomicalMarketOrderCount = 0;
 
           do {
             try {
@@ -63,6 +61,22 @@ const OrderUpdateProcess = async () => {
               }
 
               for (const order of orders) {
+                bitatomOrderCount += 1;
+
+                if (bitatomOrderCount >= 3001) {
+                  breakBitatom = true;
+                  break;
+                }
+
+                const exist = await RedisInstance.sismember(
+                  `order:bitatom:${token.name}`,
+                  order.id,
+                );
+
+                if (exist) {
+                  continue;
+                }
+
                 try {
                   await RedisInstance.sadd(
                     `order:bitatom:${token.name}`,
@@ -95,7 +109,7 @@ const OrderUpdateProcess = async () => {
               console.log(e);
               continue;
             }
-          } while (true);
+          } while (!breakBitatom);
 
           do {
             try {
@@ -115,7 +129,23 @@ const OrderUpdateProcess = async () => {
               }
 
               for (const order of orders) {
+                atomicalMarketOrderCount += 1;
+
+                if (atomicalMarketOrderCount >= 3001) {
+                  breakAtomicalMarket = true;
+                  break;
+                }
+
                 if (!order.txId) {
+                  continue;
+                }
+
+                const exist = await RedisInstance.sismember(
+                  `order:atomicalmarket:${token.name}`,
+                  order.bid_id,
+                );
+
+                if (exist) {
                   continue;
                 }
 
@@ -151,7 +181,7 @@ const OrderUpdateProcess = async () => {
               console.log(e);
               continue;
             }
-          } while (true);
+          } while (!breakAtomicalMarket);
         }
 
         await RedisInstance.set("update:timestamp:order", dayjs().unix());

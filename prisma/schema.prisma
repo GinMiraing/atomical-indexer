@@ -70,7 +70,7 @@ model atomical_token {
   @@index([atomical_id, atomical_number, deploy_time])
 }
 
-model order {
+model atomical_order {
   id         Int    @id @default(autoincrement())
   bid        String @unique @db.VarChar(255)
   market     String @db.VarChar(255)

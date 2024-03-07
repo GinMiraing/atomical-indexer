@@ -84,7 +84,7 @@ const OrderUpdateProcess = async () => {
                   );
                 } catch (e) {}
 
-                await DatabaseInstance.order.upsert({
+                await DatabaseInstance.atomical_order.upsert({
                   create: {
                     bid: order.id,
                     market: "bitatom",
@@ -156,7 +156,7 @@ const OrderUpdateProcess = async () => {
                   );
                 } catch (e) {}
 
-                await DatabaseInstance.order.upsert({
+                await DatabaseInstance.atomical_order.upsert({
                   create: {
                     bid: order.bid_id,
                     market: "atomicalmarket",

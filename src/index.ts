@@ -22,10 +22,8 @@ config();
 const main = async () => {
   try {
     await Promise.all([
-      spawnPromise("node", ["./dist/lib/process/order-update.js"]),
       spawnPromise("node", ["./dist/lib/process/indexer.js"]),
       spawnPromise("node", ["./dist/lib/process/collection-update.js"]),
-      spawnPromise("node", ["./dist/lib/process/token-update.js"]),
       spawnPromise("node", ["./dist/lib/process/status-update.js"]),
     ]);
     // Handle success if needed

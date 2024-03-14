@@ -10,8 +10,6 @@ import { sleep } from "../utils";
 const CollectionUpdateProcess = async () => {
   try {
     do {
-      console.log("start collection update");
-
       try {
         const timestamp = await RedisInstance.get(
           "update:timestamp:collections:all",

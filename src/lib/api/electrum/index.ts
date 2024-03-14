@@ -1,7 +1,5 @@
 import { ElectrumApi } from "./instance";
 
-const electrumClient = ElectrumApi.createClient(
-  "https://ep.atomicalmarket.com/proxy",
-);
+const electrumClient = ElectrumApi.createClient("https://ep.wizz.cash/proxy");
 
 export default electrumClient;

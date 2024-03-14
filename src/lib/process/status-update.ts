@@ -17,8 +17,6 @@ const StatusUpdateProcess = async () => {
 
   try {
     do {
-      console.log("start status update");
-
       try {
         const timestamp = await RedisInstance.get("update:timestamp:status");
 
@@ -34,53 +32,10 @@ const StatusUpdateProcess = async () => {
           }
         }
 
-        const [tokens, dmitems, realms] = await DatabaseInstance.$transaction([
-          DatabaseInstance.atomical_token.findMany({
-            select: selectClause,
-            where: whereClause,
-          }),
-          DatabaseInstance.atomical_dmitem.findMany({
-            select: selectClause,
-            where: whereClause,
-          }),
-          DatabaseInstance.atomical_realm.findMany({
-            select: selectClause,
-            where: whereClause,
-          }),
-        ]);
-
-        if (tokens.length > 0) {
-          for (const token of tokens) {
-            try {
-              await sleep(1000);
-
-              const { result } = await electrumClient.atomicalsGet(
-                token.atomical_id,
-              );
-
-              if (
-                !isFT(result) ||
-                !result.$request_ticker_status ||
-                result.$request_ticker_status.status !== "verified"
-              ) {
-                continue;
-              }
-
-              await DatabaseInstance.atomical_token.update({
-                data: {
-                  status: 1,
-                },
-                where: {
-                  atomical_id: token.atomical_id,
-                },
-              });
-            } catch (e) {
-              console.error("update status failed:", token.atomical_id);
-              console.error("error:", e);
-              continue;
-            }
-          }
-        }
+        const dmitems = await DatabaseInstance.atomical_dmitem.findMany({
+          select: selectClause,
+          where: whereClause,
+        });
 
         if (dmitems.length > 0) {
           for (const dmitem of dmitems) {
@@ -110,40 +65,6 @@ const StatusUpdateProcess = async () => {
               });
             } catch (e) {
               console.error("update status failed:", dmitem.atomical_id);
-              console.error("error:", e);
-              continue;
-            }
-          }
-        }
-
-        if (realms.length > 0) {
-          for (const realm of realms) {
-            try {
-              await sleep(1000);
-
-              const { result } = await electrumClient.atomicalsGet(
-                realm.atomical_id,
-              );
-
-              if (
-                !isREALM(result) ||
-                !result.$request_realm_status ||
-                result.$request_realm_status.status !== "verified"
-              ) {
-                continue;
-              }
-
-              await DatabaseInstance.atomical_realm.update({
-                data: {
-                  name: result.$full_realm_name,
-                  status: 1,
-                },
-                where: {
-                  atomical_id: realm.atomical_id,
-                },
-              });
-            } catch (e) {
-              console.error("update status failed:", realm.atomical_id);
               console.error("error:", e);
               continue;
             }

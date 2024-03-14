@@ -17,6 +17,9 @@ export const getTokenHolders = async (token: string, limit = 100) => {
       limit,
       offset: 0,
     },
+    headers: {
+      "User-Agent": "atomicalmarket",
+    },
   });
 
   return resp.data;
@@ -36,6 +39,9 @@ export const getCollectionHolders = async (collection: string, limit = 100) => {
       limit,
       offset: 0,
     },
+    headers: {
+      "User-Agent": "atomicalmarket",
+    },
   });
 
   return resp.data;
@@ -53,6 +59,9 @@ export const getTokenStatsInAtomicalMarket = async (token: string) => {
   }>(`${MarketUrl}/token/stats`, {
     params: {
       ticker: token,
+    },
+    headers: {
+      "User-Agent": "atomicalmarket",
     },
   });
 
@@ -83,6 +92,9 @@ export const getOrderHistoryInAtomicalMarket = async (
       offset,
       Event: "sold",
       ticker: token,
+    },
+    headers: {
+      "User-Agent": "atomicalmarket",
     },
   });
 

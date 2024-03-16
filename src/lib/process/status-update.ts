@@ -100,7 +100,7 @@ const StatusUpdateProcess = async () => {
                 continue;
               }
 
-              await DatabaseInstance.atomical_dmitem.update({
+              await DatabaseInstance.atomical_realm.update({
                 data: {
                   status: 1,
                   update_at: dayjs().unix(),
@@ -134,7 +134,7 @@ const StatusUpdateProcess = async () => {
                 continue;
               }
 
-              await DatabaseInstance.atomical_dmitem.update({
+              await DatabaseInstance.atomical_subrealm.update({
                 data: {
                   status: 1,
                   update_at: dayjs().unix(),

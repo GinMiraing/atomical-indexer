@@ -70,7 +70,7 @@ export interface DMITEMResponse extends BaseAtomicalResponse {
 }
 
 export interface REALMResponse extends BaseAtomicalResponse {
-  $full_realm_name?: string;
+  $request_realm: string;
   $request_realm_status: {
     status: string;
   };
@@ -88,11 +88,28 @@ export interface CONTAINERResponse extends BaseAtomicalResponse {
   };
 }
 
+export interface SubRealmResponse extends BaseAtomicalResponse {
+  $request_subrealm: string;
+  $parent_realm: string;
+  $request_full_realm_name: string;
+  $request_subrealm_status: {
+    status: string;
+  };
+  mint_data: {
+    fields: {
+      args: {
+        parent_realm: string;
+      };
+    };
+  };
+}
+
 export type AtomicalUnionResponse =
   | FTResponse
   | DMITEMResponse
   | REALMResponse
-  | CONTAINERResponse;
+  | CONTAINERResponse
+  | SubRealmResponse;
 
 export interface ElectrumApiInterface {
   close: () => Promise<void>;

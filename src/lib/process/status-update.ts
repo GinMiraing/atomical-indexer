@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 import electrumClient from "../api/electrum";
-import { isDMINT, isFT, isREALM } from "../api/electrum/utils";
+import { isDMINT, isREALM, isSubRealm } from "../api/electrum/utils";
 import DatabaseInstance from "../server/prisma.server";
 import RedisInstance from "../server/redis.server";
 import { sleep } from "../utils";
@@ -24,7 +24,7 @@ const StatusUpdateProcess = async () => {
           const now = dayjs().unix();
           const prev = Number(timestamp);
 
-          const duration = 60 * 5;
+          const duration = 60 * 1;
 
           if (now - prev < duration) {
             await sleep(duration * 1000 + 5000);
@@ -32,10 +32,21 @@ const StatusUpdateProcess = async () => {
           }
         }
 
-        const dmitems = await DatabaseInstance.atomical_dmitem.findMany({
-          select: selectClause,
-          where: whereClause,
-        });
+        const [dmitems, realms, subrealms] =
+          await DatabaseInstance.$transaction([
+            DatabaseInstance.atomical_dmitem.findMany({
+              select: selectClause,
+              where: whereClause,
+            }),
+            DatabaseInstance.atomical_realm.findMany({
+              select: selectClause,
+              where: whereClause,
+            }),
+            DatabaseInstance.atomical_subrealm.findMany({
+              select: selectClause,
+              where: whereClause,
+            }),
+          ]);
 
         if (dmitems.length > 0) {
           for (const dmitem of dmitems) {
@@ -58,6 +69,7 @@ const StatusUpdateProcess = async () => {
                 data: {
                   container: result.$parent_container_name,
                   status: 1,
+                  update_at: dayjs().unix(),
                 },
                 where: {
                   atomical_id: dmitem.atomical_id,
@@ -65,6 +77,74 @@ const StatusUpdateProcess = async () => {
               });
             } catch (e) {
               console.error("update status failed:", dmitem.atomical_id);
+              console.error("error:", e);
+              continue;
+            }
+          }
+        }
+
+        if (realms.length > 0) {
+          for (const realm of realms) {
+            try {
+              await sleep(1000);
+
+              const { result } = await electrumClient.atomicalsGet(
+                realm.atomical_id,
+              );
+
+              if (
+                !isREALM(result) ||
+                !result.$request_realm_status ||
+                result.$request_realm_status.status !== "verified"
+              ) {
+                continue;
+              }
+
+              await DatabaseInstance.atomical_dmitem.update({
+                data: {
+                  status: 1,
+                  update_at: dayjs().unix(),
+                },
+                where: {
+                  atomical_id: realm.atomical_id,
+                },
+              });
+            } catch (e) {
+              console.error("update status failed:", realm.atomical_id);
+              console.error("error:", e);
+              continue;
+            }
+          }
+        }
+
+        if (subrealms.length > 0) {
+          for (const subrealm of subrealms) {
+            try {
+              await sleep(1000);
+
+              const { result } = await electrumClient.atomicalsGet(
+                subrealm.atomical_id,
+              );
+
+              if (
+                !isSubRealm(result) ||
+                !result.$request_subrealm_status ||
+                result.$request_subrealm_status.status !== "verified"
+              ) {
+                continue;
+              }
+
+              await DatabaseInstance.atomical_dmitem.update({
+                data: {
+                  status: 1,
+                  update_at: dayjs().unix(),
+                },
+                where: {
+                  atomical_id: subrealm.atomical_id,
+                },
+              });
+            } catch (e) {
+              console.error("update status failed:", subrealm.atomical_id);
               console.error("error:", e);
               continue;
             }

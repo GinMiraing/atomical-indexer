@@ -3,15 +3,9 @@ import {
   AtomicalUnionResponse,
   CONTAINERResponse,
   DMITEMResponse,
-  FTResponse,
   REALMResponse,
+  SubRealmResponse,
 } from "./interface";
-
-export const isFT = (
-  atomical: AtomicalUnionResponse,
-): atomical is FTResponse => {
-  return atomical.type === "FT" && atomical.subtype !== "direct";
-};
 
 export const isDMINT = (
   atomical: AtomicalUnionResponse,
@@ -28,6 +22,15 @@ export const isREALM = (
   return (
     atomical.subtype === AtomicalSubtype.REALM ||
     atomical.subtype === AtomicalSubtype.REQUEST_REALM
+  );
+};
+
+export const isSubRealm = (
+  atomical: AtomicalUnionResponse,
+): atomical is SubRealmResponse => {
+  return (
+    atomical.subtype === AtomicalSubtype.SUBREALM ||
+    atomical.subtype === AtomicalSubtype.REQUEST_SUBREALM
   );
 };
 

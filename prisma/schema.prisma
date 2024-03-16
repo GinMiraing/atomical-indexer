@@ -34,3 +34,27 @@ model atomical_dmitem {
 
   @@index([atomical_id, container])
 }
+
+model atomical_realm {
+  id              Int    @id @default(autoincrement())
+  atomical_id     String @unique @db.VarChar(255)
+  atomical_number Int    @db.UnsignedInt
+  name            String @db.VarChar(255)
+  status          Int    @db.UnsignedTinyInt
+  mint_time       Int    @db.UnsignedInt
+  update_at       Int    @db.UnsignedInt
+
+  @@index([atomical_id])
+}
+
+model atomical_subrealm {
+  id              Int    @id @default(autoincrement())
+  atomical_id     String @unique @db.VarChar(255)
+  atomical_number Int    @db.UnsignedInt
+  parent_id       String @db.VarChar(255)
+  name            String @db.VarChar(255)
+  full_name       String @db.VarChar(255)
+  status          Int    @db.UnsignedTinyInt
+  mint_time       Int    @db.UnsignedInt
+  update_at       Int    @db.UnsignedInt
+}

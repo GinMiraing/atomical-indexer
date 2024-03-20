@@ -31,6 +31,7 @@ model atomical_dmitem {
   status          Int    @db.UnsignedTinyInt
   mint_time       Int    @db.UnsignedInt
   update_at       Int    @db.UnsignedInt
+  listed          Int?   @db.UnsignedTinyInt
 
   @@index([atomical_id, container])
 }
@@ -43,6 +44,7 @@ model atomical_realm {
   status          Int    @db.UnsignedTinyInt
   mint_time       Int    @db.UnsignedInt
   update_at       Int    @db.UnsignedInt
+  listed          Int?   @db.UnsignedTinyInt
 
   @@index([atomical_id])
 }
@@ -57,4 +59,52 @@ model atomical_subrealm {
   status          Int    @db.UnsignedTinyInt
   mint_time       Int    @db.UnsignedInt
   update_at       Int    @db.UnsignedInt
+  listed          Int?   @db.UnsignedTinyInt
+
+  @@index([atomical_id])
+}
+
+model atomical_offer {
+  id               Int     @id @default(autoincrement())
+  atomical_id      String  @db.VarChar(255)
+  atomical_number  Int     @db.UnsignedInt
+  type             Int     @db.UnsignedTinyInt
+  price            BigInt  @db.UnsignedBigInt
+  status           Int     @db.UnsignedTinyInt
+  list_account     String  @db.VarChar(255)
+  funding_receiver String  @db.VarChar(255)
+  unsigned_psbt    String  @db.LongText
+  signed_psbt      String  @db.LongText
+  tx               String  @db.Char(64)
+  vout             Int     @db.UnsignedTinyInt
+  value            Int     @db.UnsignedInt
+  create_at        Int     @db.UnsignedInt
+  update_at        Int     @db.UnsignedInt
+  realm            String? @db.VarChar(255)
+  dmitem           String? @db.VarChar(255)
+  container        String? @db.VarChar(255)
+  bid              String  @unique @db.Char(64)
+
+  @@index([bid, atomical_id])
+}
+
+model atomical_order {
+  id              Int     @id @default(autoincrement())
+  bid             String  @unique @db.Char(64)
+  atomical_id     String  @db.VarChar(255)
+  atomical_number Int     @db.UnsignedInt
+  type            Int     @db.UnsignedTinyInt
+  price           BigInt  @db.UnsignedBigInt
+  status          Int     @db.UnsignedTinyInt
+  list_account    String  @db.VarChar(255)
+  item_receiver   String  @db.VarChar(255)
+  signed_psbt     String  @db.LongText
+  tx              String  @db.Char(64)
+  create_at       Int     @db.UnsignedInt
+  update_at       Int     @db.UnsignedInt
+  realm           String? @db.VarChar(255)
+  dmitem          String? @db.VarChar(255)
+  container       String? @db.VarChar(255)
+
+  @@index([bid, atomical_id])
 }

@@ -57,18 +57,21 @@ const StatusUpdateProcess = async () => {
                 dmitem.atomical_id,
               );
 
-              if (
-                !isDMINT(result) ||
-                !result.$request_dmitem_status ||
-                result.$request_dmitem_status.status !== "verified"
-              ) {
+              if (!isDMINT(result) || !result.$request_dmitem_status) {
                 continue;
               }
 
               await DatabaseInstance.atomical_dmitem.update({
                 data: {
                   container: result.$parent_container_name,
-                  status: 1,
+                  status:
+                    result.$request_dmitem_status.status === "verified"
+                      ? 1
+                      : result.$request_dmitem_status.status.startsWith(
+                            "pending",
+                          )
+                        ? 2
+                        : 3,
                   update_at: dayjs().unix(),
                 },
                 where: {
@@ -92,17 +95,20 @@ const StatusUpdateProcess = async () => {
                 realm.atomical_id,
               );
 
-              if (
-                !isREALM(result) ||
-                !result.$request_realm_status ||
-                result.$request_realm_status.status !== "verified"
-              ) {
+              if (!isREALM(result) || !result.$request_realm_status) {
                 continue;
               }
 
               await DatabaseInstance.atomical_realm.update({
                 data: {
-                  status: 1,
+                  status:
+                    result.$request_realm_status.status === "verified"
+                      ? 1
+                      : result.$request_realm_status.status.startsWith(
+                            "pending",
+                          )
+                        ? 2
+                        : 3,
                   update_at: dayjs().unix(),
                 },
                 where: {
@@ -126,17 +132,20 @@ const StatusUpdateProcess = async () => {
                 subrealm.atomical_id,
               );
 
-              if (
-                !isSubRealm(result) ||
-                !result.$request_subrealm_status ||
-                result.$request_subrealm_status.status !== "verified"
-              ) {
+              if (!isSubRealm(result) || !result.$request_subrealm_status) {
                 continue;
               }
 
               await DatabaseInstance.atomical_subrealm.update({
                 data: {
-                  status: 1,
+                  status:
+                    result.$request_subrealm_status.status === "verified"
+                      ? 1
+                      : result.$request_subrealm_status.status.startsWith(
+                            "pending",
+                          )
+                        ? 2
+                        : 3,
                   update_at: dayjs().unix(),
                 },
                 where: {

@@ -57,7 +57,11 @@ const StatusUpdateProcess = async () => {
                 dmitem.atomical_id,
               );
 
-              if (!isDMINT(result) || !result.$request_dmitem_status) {
+              if (
+                !isDMINT(result) ||
+                !result.$request_dmitem_status ||
+                !result.$request_dmitem_status.status
+              ) {
                 continue;
               }
 
@@ -95,7 +99,11 @@ const StatusUpdateProcess = async () => {
                 realm.atomical_id,
               );
 
-              if (!isREALM(result) || !result.$request_realm_status) {
+              if (
+                !isREALM(result) ||
+                !result.$request_realm_status ||
+                !result.$request_realm_status.status
+              ) {
                 continue;
               }
 
@@ -132,7 +140,11 @@ const StatusUpdateProcess = async () => {
                 subrealm.atomical_id,
               );
 
-              if (!isSubRealm(result) || !result.$request_subrealm_status) {
+              if (
+                !isSubRealm(result) ||
+                !result.$request_subrealm_status ||
+                !result.$request_subrealm_status.status
+              ) {
                 continue;
               }
 

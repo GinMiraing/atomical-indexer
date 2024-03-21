@@ -71,9 +71,9 @@ const CollectionUpdateProcess = async () => {
                 atomical_number: containerInfo.atomical_number,
                 container: containerInfo.$request_container,
                 name: containerInfo.$request_container,
-                deploy_time: containerInfo.mint_info.args.time,
+                deploy_time: containerInfo.mint_info?.args?.time || 0,
                 item_count:
-                  containerInfo.$container_dmint_status?.dmint.items || 0,
+                  containerInfo.$container_dmint_status?.dmint?.items || 0,
                 minted_count: Number(collection.minted),
                 holders: holderInfo.holderCount,
                 rank: 0,

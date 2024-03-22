@@ -37,6 +37,7 @@ model atomical_dmitem {
   bid             String? @db.Char(64)
 
   @@index([status])
+  @@index([atomical_id])
   @@index([container])
 }
 
@@ -66,6 +67,9 @@ model atomical_subrealm {
   mint_time       Int     @db.UnsignedInt
   update_at       Int     @db.UnsignedInt
   bid             String? @db.Char(64)
+
+  @@index([status])
+  @@index([atomical_id])
 }
 
 model atomical_offer {

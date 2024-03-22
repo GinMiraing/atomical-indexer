@@ -31,12 +31,12 @@ const CollectionUpdateProcess = async () => {
           minted: bigint;
           container: string;
         }[] = await DatabaseInstance.$queryRaw`
-            SELECT COUNT(*) AS minted, container
+            SELECT
+              COUNT(*) AS minted,
+              container
             FROM atomical_dmitem
-            WHERE
-                status = 1
-            GROUP BY
-                container
+            WHERE status = 1
+            GROUP BY container
           `;
 
         for (const collection of collectionWithCount) {

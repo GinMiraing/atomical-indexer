@@ -67,6 +67,15 @@ export interface DMITEMResponse extends BaseAtomicalResponse {
       [key: string]: any;
     };
   };
+  location_info: {
+    index: number;
+    location: string;
+    script: string;
+    scripthash: string;
+    tx_num: number;
+    txid: string;
+    value: number;
+  }[];
 }
 
 export interface REALMResponse extends BaseAtomicalResponse {
@@ -74,6 +83,15 @@ export interface REALMResponse extends BaseAtomicalResponse {
   $request_realm_status: {
     status: string;
   };
+  location_info: {
+    index: number;
+    location: string;
+    script: string;
+    scripthash: string;
+    tx_num: number;
+    txid: string;
+    value: number;
+  }[];
 }
 
 export interface CONTAINERResponse extends BaseAtomicalResponse {

@@ -92,6 +92,7 @@ model atomical_offer {
   dmitem           String? @db.VarChar(255)
   container        String? @db.VarChar(255)
   bid              String  @unique @db.Char(64)
+  description      String? @db.LongText
 
   @@index([status, container])
   @@index([status, type, price])

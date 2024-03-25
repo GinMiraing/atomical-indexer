@@ -25,6 +25,7 @@ const main = async () => {
       spawnPromise("node", ["./dist/lib/process/indexer.js"]),
       spawnPromise("node", ["./dist/lib/process/collection-update.js"]),
       spawnPromise("node", ["./dist/lib/process/status-update.js"]),
+      spawnPromise("node", ["./dist/lib/process/offer-check.js"]),
     ]);
     // Handle success if needed
   } catch (error) {

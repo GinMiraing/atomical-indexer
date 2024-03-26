@@ -26,6 +26,7 @@ const main = async () => {
       spawnPromise("node", ["./dist/lib/process/collection-update.js"]),
       spawnPromise("node", ["./dist/lib/process/status-update.js"]),
       spawnPromise("node", ["./dist/lib/process/offer-check.js"]),
+      spawnPromise("node", ["./dist/lib/process/parentrealm-update.js"]),
     ]);
     // Handle success if needed
   } catch (error) {

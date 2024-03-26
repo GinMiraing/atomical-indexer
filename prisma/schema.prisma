@@ -72,6 +72,21 @@ model atomical_subrealm {
   @@index([atomical_id])
 }
 
+model atomical_parentrealm {
+  id              Int    @id @default(autoincrement())
+  atomical_id     String @unique @db.VarChar(255)
+  atomical_number Int    @db.UnsignedInt
+  name            String @db.VarChar(255)
+  deploy_time     Int    @db.UnsignedInt
+  minted_count    Int    @db.UnsignedInt
+  holders         Int    @db.UnsignedInt
+  rank            Int    @db.UnsignedTinyInt
+  update_at       Int    @db.UnsignedInt
+  icon_url        String @db.VarChar(255)
+
+  @@index([name])
+}
+
 model atomical_offer {
   id               Int     @id @default(autoincrement())
   atomical_id      String  @db.VarChar(255)
